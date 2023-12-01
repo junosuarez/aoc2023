@@ -135,3 +135,9 @@ ok now to figure out how to iterate an array (`vec`) https://docs.hhvm.com/hack/
 ...
 
 ok, after a little bit of fumbling through the std lib docs, i was able to get part one working, and i'm going to call it a night.
+
+i'm a notorious fake exiter at parties. so i finished it, ugly but working. the way vectors and dicts work seem pretty nice, and so far my hit rate is pretty good navigating the docs to find what I need. Rough onboarding curve for "just setting up my dev environment" but after that, writing it seems pretty nice. Will be nicer once I have the editor extensions like intellisense or autofmt working, but even just syntax highlighting and manual typing is, um, not terrible?
+
+## Day 2
+
+tk!
