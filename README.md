@@ -131,3 +131,7 @@ use namespace HH\Lib\{C, Dict, Keyset, Regex, Str, Vec};
 adding that makes it work, and i can call (at long last) `Str\length`. Woo! now we're hackin'
 
 ok now to figure out how to iterate an array (`vec`) https://docs.hhvm.com/hack/arrays-and-collections/vec-keyset-and-dict
+
+...
+
+ok, after a little bit of fumbling through the std lib docs, i was able to get part one working, and i'm going to call it a night.
