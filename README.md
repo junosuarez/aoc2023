@@ -4,5 +4,5 @@
 Most likely won't go all the way to the end, but this will serve as a platform for several light daliances with some programming languages encountered in various situs.
 
 Day 1
-====
+---
 Language: [hacklang](https://docs.hhvm.com/hack)
