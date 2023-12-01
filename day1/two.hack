@@ -23,24 +23,24 @@ function calibration_line(string $str): int {
 
   // so for now i'm inlining this, even though it's less efficient or whatever
   $words = dict[
-  'one' => '1',
-  'two' => '2',
-  'three' => '3',
-  'four' => '4',
-  'five' => '5',
-  'six' => '6',
-  'seven' => '7',
-  'eight' => '8',
-  'nine' => '9',
-  'zero' => '0'
+  'one' => 1,
+  'two' => 2,
+  'three' => 3,
+  'four' => 4,
+  'five' => 5,
+  'six' => 6,
+  'seven' => 7,
+  'eight' => 8,
+  'nine' => 9,
+  'zero' => 0
 ];
 
 
-  \printf("orig: $str\n");
-  foreach ($words as $word => $digit) {
-    $str = Str\replace($str, $word, $digit);
-    // there's also a Str\replace_every fn that could make this a oneliner, but for now getting comfortable with foreach syntax seems useful
-  }
+  // \printf("orig: $str\n");
+  // foreach ($words as $word => $digit) {
+  //   $str = Str\replace($str, $word, $digit);
+  //   // there's also a Str\replace_every fn that could make this a oneliner, but for now getting comfortable with foreach syntax seems useful
+  // }
 
   // ok for real here is my stopping point: the way i have it implemented, we go in order of the dict, but this test case shows instead we have to get more parserlike and go in order of the input string:
   // eightwothree => 23 (*) - wrong, this is what i currently get
@@ -48,7 +48,7 @@ function calibration_line(string $str): int {
   // when i pick this up, i think i can go back to the main traversal loop below, and at each character, in the not-digit case, look ahead to see if it matches a word key, and if it does, well, thats ok because none of our words are ambiguous so we can just keep iterating character-wise and it should Just WorkTM
 
 
-  \printf("then: $str\n");
+  // \printf("then: $str\n");
 
   $chars = Str\split($str, "");
 
@@ -66,6 +66,19 @@ function calibration_line(string $str): int {
         $first_digit = $as_int;
       }
       $last_digit = $as_int;
+    } else {
+      // not a digit, but let's check to see if it's a spelled-out number word
+      // memory inefficient if the strings are really long, but theres a reason i paid to max out the ram on my laptop i guess
+      // (nb i think my docker machine only has 4GB, so we'll know sooner if i ever get in real trouble, probably later on but for now its day one)
+      $rest = Str\slice($str, $idx);
+      foreach ($words as $word => $int) {
+        if (Str\starts_with($rest, $word)) {
+          if ($first_digit is null) {
+            $first_digit = $int;
+          }
+          $last_digit = $int;
+        }
+      }
     }
   }
 
@@ -86,7 +99,8 @@ async function main(): Awaitable<void> {
 
   // read a whole doc, line-wise, then sum all the lines
 
-  $reader = new IO\BufferedReader(File\open_read_only(__DIR__.'/two.ex'));
+  // $reader = new IO\BufferedReader(File\open_read_only(__DIR__.'/two.ex'));
+  $reader = new IO\BufferedReader(File\open_read_only(__DIR__.'/one.in'));
 
   $sum = 0;
   foreach ($reader->linesIterator() await as $line) {
