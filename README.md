@@ -120,3 +120,14 @@ very slow progress but now i can run a barebones script, so that's something:
 root@bc7fb67094e1:/app# hhvm day1/one.hack
 1abc2  - 1
 ```
+
+decided to go copy off of some other code, and sure enough it seems like there are `use` statements at the top for the Str namespace:
+https://github.com/hhvm/hhast/blob/main/src/File.hack
+
+```
+use namespace HH\Lib\{C, Dict, Keyset, Regex, Str, Vec};
+```
+
+adding that makes it work, and i can call (at long last) `Str\length`. Woo! now we're hackin'
+
+ok now to figure out how to iterate an array (`vec`) https://docs.hhvm.com/hack/arrays-and-collections/vec-keyset-and-dict
