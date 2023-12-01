@@ -1,0 +1,11 @@
+{
+    "require": {
+        "hhvm/hhvm-autoload": "^3.3",
+        "hhvm/hsl": "^4.108"
+    },
+    "config": {
+        "allow-plugins": {
+            "hhvm/hhvm-autoload": true
+        }
+    }
+}
