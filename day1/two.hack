@@ -1,27 +1,12 @@
 #!/usr/bin/env hhvm
 namespace AOC\Day1;
 use namespace HH\Lib\{File,IO,Str};
+use namespace AOC\util;
 
 // https://adventofcode.com/2023/day/1
 
 
-// in the extension for part two, we have the additional requirement of spelled-out digits:
-// one, two, three, four, five, six, seven, eight, and nine also count as valid "digits".
-
-
-
 function calibration_line(string $str): int {
-  // $str
-  // return 1;
-  // return Str\length($str);
-
-  // first, handle digit replacements.
-  // yes this is inefficient, but it's still O(n) :shipit:
-
-  // originally i'd hoisted this map to the top of the file, like i would in js, but i get the following error:
-  // Fatal error: Found top-level code in /app/day1/two.hack on line 21
-
-  // so for now i'm inlining this, even though it's less efficient or whatever
   $words = dict[
   'one' => 1,
   'two' => 2,
@@ -35,24 +20,7 @@ function calibration_line(string $str): int {
   'zero' => 0
 ];
 
-
-  // \printf("orig: $str\n");
-  // foreach ($words as $word => $digit) {
-  //   $str = Str\replace($str, $word, $digit);
-  //   // there's also a Str\replace_every fn that could make this a oneliner, but for now getting comfortable with foreach syntax seems useful
-  // }
-
-  // ok for real here is my stopping point: the way i have it implemented, we go in order of the dict, but this test case shows instead we have to get more parserlike and go in order of the input string:
-  // eightwothree => 23 (*) - wrong, this is what i currently get
-  // eightwothree => 83
-  // when i pick this up, i think i can go back to the main traversal loop below, and at each character, in the not-digit case, look ahead to see if it matches a word key, and if it does, well, thats ok because none of our words are ambiguous so we can just keep iterating character-wise and it should Just WorkTM
-
-
-  // \printf("then: $str\n");
-
   $chars = Str\split($str, "");
-
-  // \print_r($chars);
 
   $first_digit = null;
   $last_digit = null;
@@ -60,7 +28,7 @@ function calibration_line(string $str): int {
   foreach ($chars as $idx => $char) {
     // printf("$idx: $char\n");
     $as_int = Str\to_int($char); // returns nullable int, null if not a digit
-    if (!($as_int is null)) {
+    if ($as_int is nonnull) {
       // it's a digit
       if ($first_digit is null) {
         $first_digit = $as_int;
@@ -68,8 +36,6 @@ function calibration_line(string $str): int {
       $last_digit = $as_int;
     } else {
       // not a digit, but let's check to see if it's a spelled-out number word
-      // memory inefficient if the strings are really long, but theres a reason i paid to max out the ram on my laptop i guess
-      // (nb i think my docker machine only has 4GB, so we'll know sooner if i ever get in real trouble, probably later on but for now its day one)
       $rest = Str\slice($str, $idx);
       foreach ($words as $word => $int) {
         if (Str\starts_with($rest, $word)) {
@@ -94,22 +60,16 @@ async function main(): Awaitable<void> {
   require_once(__DIR__.'/../vendor/autoload.hack');
   \Facebook\AutoloadMap\initialize();
 
-  // printf("%s  - %s\n", "1abc2", calibration_line("1abc2"));
-  // printf("%s  - %s\n", "treb7uchet", calibration_line("treb7uchet"));
 
-  // read a whole doc, line-wise, then sum all the lines
+  $lines = \AOC\fileInput(__DIR__.'/input.txt');
 
-  // $reader = new IO\BufferedReader(File\open_read_only(__DIR__.'/two.ex'));
-  $reader = new IO\BufferedReader(File\open_read_only(__DIR__.'/one.in'));
+  $out = await \AOC\reduce($lines, ($acc, $line) ==> {
+     $val = calibration_line($line);
+    \printf("line: $line :: val: $val\n");
+    $acc += $val;
+    return $acc + 1;
+  }, 0);
+  \printf("out: $out\n");
 
-  $sum = 0;
-  foreach ($reader->linesIterator() await as $line) {
-    // do_stuff($line);
-    $val = calibration_line($line);
-    $sum = $sum + $val;
-    \printf(":: $line :: $val :: $sum\n");
-  }
-
-  \printf("$sum\n");
 }
 

@@ -44,21 +44,15 @@ async function main(): Awaitable<void> {
   require_once(__DIR__.'/../vendor/autoload.hack');
   \Facebook\AutoloadMap\initialize();
 
-  // printf("%s  - %s\n", "1abc2", calibration_line("1abc2"));
-  // printf("%s  - %s\n", "treb7uchet", calibration_line("treb7uchet"));
+  $lines = AOC\fileInput(__DIR__.'/input.txt');
 
-  // read a whole doc, line-wise, then sum all the lines
-
-  $reader = new IO\BufferedReader(File\open_read_only(__DIR__.'/one.in'));
-
-  $sum = 0;
-  foreach ($reader->linesIterator() await as $line) {
-    // do_stuff($line);
-    printf(":: $line :: $sum\n");
-    $sum = $sum + calibration_line($line);
-  }
-  printf("$sum\n");
-
+  $out = await AOC\reduce($lines, ($acc, $line) ==> {
+     $val = calibration_line($line);
+    \printf("line: $line :: val: $val\n");
+    $acc += $val;
+    return $acc + 1;
+  }, 0);
+  printf("out: $out\n");
 
 }
 
