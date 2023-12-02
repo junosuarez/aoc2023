@@ -162,3 +162,25 @@ i should just make life easy for myself and say "everything's a dictionary" like
 ### part two
 
 this followed from part one much more easily than yesterday. my solution still feels non-idiomatic, and quite verbose. basically right now i'm measuring the gap between how i'm structuring a strategy in my head to solve the problem vs what i'm able to express in the language.
+
+### refactor
+
+for funsies, gonna try refactoring my part 2 answer to be object-oriented, with [classes](https://docs.hhvm.com/hack/classes/introduction) for Game and CubeSet (nee DrawRgb)
+
+after finishing the refactoring, i think i like it well enough. it's, uh, object-like. i was able to make static constructors. (i still have the habit of including ser/de in the data class on the first pass, until if and when it needs to be factored out)
+
+there's a feature called ["constructor parameter promotion"](https://docs.hhvm.com/hack/classes/constructors#constructor-parameter-promotion) for deduping repetion in declaring properties and redeclaring them in constructors. not quite case classes, but handy enough. eg:
+
+```
+class CubeSet {
+  public function __construct(
+    public int $r = 0,
+    public int $g = 0,
+    public int $b = 0
+  ) {}
+}
+```
+
+## Day 3
+
+tk

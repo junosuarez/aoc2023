@@ -4,69 +4,74 @@ use namespace AOC;
 
 // https://adventofcode.com/2023/day/2
 
-// it sounds like a monty hall style game
+class Game {
+  public int $id;
+  public vec<CubeSet> $draws;
 
-// data: gameId, multiple sets of (number of cubes of r, g, b)
-// eg:
-// Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
+  public function possible(CubeSet $actual): bool {
+    foreach ($this->draws as $draw) {
+      if ($draw->r > $actual->r ||
+        $draw->g > $actual->g ||
+        $draw->b > $actual->b) {
+      // \printf("Game %d - too many: D %s ; A %s", $game[0], \print_r($draw, true), \print_r($actual, true));
+        return false;
+      }
+    }
+    return true;
+  }
 
-// representation:
-//  tuple(int game_id, \HH\Set<vec<tuple(int red, int blue, int green)>>)
-// if a color isn't listed in the line string, its tuple value is 0
+  public static function parse(string $game_str): Game {
+    $it = new Game();
 
-// query:
-// which games would have been possible if the bag contained only 12 red cubes, 13 green cubes, and 14 blue cubes
+    // first parse game id, eg "Game 11: ..."
+    $parts = Str\split($game_str, ": ");
+    $it->id = Str\to_int(Str\split($parts[0], " ")[1]);
 
-newtype DrawRgb = (int, int, int);
-newtype Game = (int, vec<DrawRgb>); // (int game_id, vec[DrawRgb] draws)
+    // then parse draws, semicolon-delimited
+    $draw_strs = Str\split($parts[1], "; ");
+    $it->draws = Vec\map($draw_strs, ($draw_str) ==> {
+      return CubeSet::parse($draw_str);
+    });
 
-function parseGame(string $str): Game {
+    return $it;
+  }
+}
 
-  // first parse game id
-  $parts = Str\split($str, ": ");
-  // $parts[0] = "Game 1"
-  $game_id = Str\to_int(Str\split($parts[0], " ")[1]);
+class CubeSet {
+  public function __construct(
+    public int $r = 0,
+    public int $g = 0,
+    public int $b = 0
+  ) {}
 
-  // then parse draws, semicolon-delimited
-  $draw_strs = Str\split($parts[1], "; ");
-  // print_r($draw_strs);
-  // parse each draw string into a DrawRgb tuple, filling in 0 if absent
-  // note colors may appear in any order
-  $draws = Vec\map($draw_strs, ($draw_str) ==> {
-    // eg "1 red, 2 green, 6 blue"
-    $r = 0;
-    $g = 0;
-    $b = 0;
+  public function power(): int {
+    return $this->r * $this->g * $this->b;
+  }
+
+  public static function parse(string $draw_str): CubeSet {
+    // eg "1 red, 2 green" or "4 blue, 1 red, 2 green"
+    $it = new CubeSet();
 
     foreach(Str\split($draw_str, ", ") as $color_str) {
-      $c = Str\split($color_str, " ");
-      if ($c[1] == "red") {
-        $r = Str\to_int($c[0]);
-      } else if ($c[1] == "green") {
-        $g = Str\to_int($c[0]);
-      } else if ($c[1] == "blue") {
-        $b = Str\to_int($c[0]);
+      $color = Str\split($color_str, " ");
+      $val = Str\to_int($color[0]);
+      switch ($color[1]){
+        case "red":
+          $it->r = $val;
+        break;
+        case "green":
+          $it->g = $val;
+        break;
+        case "blue":
+          $it->b = $val;
+        break;
       }
     }
 
-    return tuple($r, $g, $b);
-  });
-
-  return tuple($game_id, $draws);
-}
-
-function is_possible(DrawRgb $actual, Game $game): bool {
-  $draws = $game[1];
-  foreach ($draws as $draw) {
-    if ($draw[0] > $actual[0] ||
-    $draw[1] > $actual[1] ||
-    $draw[2] > $actual[2]) {
-      // \printf("Game %d - too many: D %s ; A %s", $game[0], \print_r($draw, true), \print_r($actual, true));
-      return false;
-    }
+    return $it;
   }
-  return true;
 }
+
 
 <<__EntryPoint>>
 async function main(): Awaitable<void> {
@@ -81,30 +86,36 @@ async function main(): Awaitable<void> {
   //   "Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red",
   //   "Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green"
   // ]);
-  // $test_actual = tuple(12,13,14);
-  $actual = tuple(12,13,14);
 
-  $r = 0;
-  $g = 0;
-  $b = 0;
+
+  $actual = new CubeSet(12, 13, 14);
 
   $out = await \AOC\reduce($lines, 0, ($acc, $line) ==> {
-     $game = parseGame($line);
-      // fewest number of cubes of each color that could have been in the bag to make the game possible
+    $game = Game::parse($line);
 
-      // so, as we iterate games and draws, keep track of the max for each of r, g, b
-      foreach ($game[1] as $draw) {
-        $r = Math\max(vec[$r, $draw[0]]);
-        $g = Math\max(vec[$g, $draw[1]]);
-        $b = Math\max(vec[$b, $draw[2]]);
-      }
+    // Part One:
+    // Determine which games would have been possible if the bag had been loaded with only 12 red cubes, 13 green cubes, and 14 blue cubes. What is the sum of the IDs of those games?
 
-      // compute power
-      $power = $r * $g * $b;
+    // printf("game %d, possible %b\n", $game->id, $game->possible($actual));
+    // if ($game->possible($actual)) {
+    //   $acc += $game->id;
+    // }
 
-    return $acc + $power;
+
+    // Part Two:
+    // For each game, find the minimum set of cubes that must have been present. What is the sum of the power of these sets?
+
+    $minset = new CubeSet();
+    foreach ($game->draws as $draw) {
+      $minset->r = Math\max(vec[$minset->r, $draw->r]);
+      $minset->g = Math\max(vec[$minset->g, $draw->g]);
+      $minset->b = Math\max(vec[$minset->b, $draw->b]);
+    }
+    // printf("g %s - m %s\n", $game->id, print_r($minset, true));
+    $acc += $minset->power();
+
+    return $acc;
   });
   \printf("out: $out\n");
 
 }
-
