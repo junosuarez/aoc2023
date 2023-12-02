@@ -67,7 +67,7 @@ async function main(): Awaitable<void> {
      $val = calibration_line($line);
     \printf("line: $line :: val: $val\n");
     $acc += $val;
-    return $acc + 1;
+    return $acc;
   });
   \printf("out: $out\n");
 

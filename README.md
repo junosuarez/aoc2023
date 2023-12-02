@@ -146,4 +146,12 @@ figuring out [async generators / AsyncIterator](https://docs.hhvm.com/hack/async
 
 ### part one
 
+i'm trying to model my data with builtin classes, so vecs and HH\Sets and tuples - but I'm finding myself wanting typedefs or type aliases or similar, and I'm not finding it quickly searching docs.
+
+ah, think i found it in the [tuple docs](https://docs.hhvm.com/hack/built-in-types/tuples):
+
+```
+newtype DrawRgb = (int, int, int);
+```
+
 tk!
