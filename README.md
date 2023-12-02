@@ -140,6 +140,8 @@ i'm a notorious fake exiter at parties. so i finished it, ugly but working. the 
 
 ## Day 2
 
+Language: [hacklang](https://docs.hhvm.com/hack)
+
 ### refactor
 
 figuring out [async generators / AsyncIterator](https://docs.hhvm.com/hack/asynchronous-operations/generators) and [lambda functions](https://docs.hhvm.com/hack/functions/anonymous-functions), i refactored some util functions for helping process AOC style input text files. I'm still not at all confident about my file or namespace layouts, or otherwise writing idiomatic code, but nonetheless, pragmatic progress.
@@ -154,4 +156,9 @@ ah, think i found it in the [tuple docs](https://docs.hhvm.com/hack/built-in-typ
 newtype DrawRgb = (int, int, int);
 ```
 
-tk!
+i spent the bulk of my time just futzing with hacklang datastructures :S
+i should just make life easy for myself and say "everything's a dictionary" like javascript
+
+### part two
+
+this followed from part one much more easily than yesterday. my solution still feels non-idiomatic, and quite verbose. basically right now i'm measuring the gap between how i'm structuring a strategy in my head to solve the problem vs what i'm able to express in the language.
