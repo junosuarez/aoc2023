@@ -15,10 +15,10 @@ async function main(): Awaitable<void> {
   // $lines = AOC\fileInput(__DIR__.'/one.in');
   $lines = AOC\testInput(vec["a","b","z"]);
 
-  $out = await AOC\reduce($lines, ($acc, $line) ==> {
+  $out = await AOC\reduce($lines, 0, ($acc, $line) ==> {
     printf("line: $line\n");
     return $acc + 1;
-  }, 0);
+  });
   printf("out: $out\n");
 
 }

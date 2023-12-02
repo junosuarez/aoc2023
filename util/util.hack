@@ -14,7 +14,11 @@ async function testInput(vec<string> $lines): AsyncIterator<string> {
 }
 
 // reads a file, maps each line, returns accumulated value
-async function reduce<TAcc>(\HH\AsyncIterator<string> $lines, (function(TAcc, string): TAcc) $collect, TAcc $init): Awaitable<TAcc> {
+async function reduce<TAcc>(
+  \HH\AsyncIterator<string> $lines,
+  TAcc $init,
+  (function(TAcc, string): TAcc) $collect
+): Awaitable<TAcc> {
 
   $acc = $init;
   foreach ($lines await as $line) {

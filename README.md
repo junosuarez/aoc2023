@@ -140,4 +140,10 @@ i'm a notorious fake exiter at parties. so i finished it, ugly but working. the 
 
 ## Day 2
 
+### refactor
+
+figuring out [async generators / AsyncIterator](https://docs.hhvm.com/hack/asynchronous-operations/generators) and [lambda functions](https://docs.hhvm.com/hack/functions/anonymous-functions), i refactored some util functions for helping process AOC style input text files. I'm still not at all confident about my file or namespace layouts, or otherwise writing idiomatic code, but nonetheless, pragmatic progress.
+
+### part one
+
 tk!

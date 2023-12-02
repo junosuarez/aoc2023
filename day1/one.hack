@@ -46,12 +46,12 @@ async function main(): Awaitable<void> {
 
   $lines = AOC\fileInput(__DIR__.'/input.txt');
 
-  $out = await AOC\reduce($lines, ($acc, $line) ==> {
+  $out = await AOC\reduce($lines, 0, ($acc, $line) ==> {
      $val = calibration_line($line);
     \printf("line: $line :: val: $val\n");
     $acc += $val;
     return $acc + 1;
-  }, 0);
+  });
   printf("out: $out\n");
 
 }
